@@ -108,11 +108,11 @@ public class Matalh {
 
     private static char checkWinnerBySlant(char[] array) {
         char winner = '-';
-        boolean xWinner = array[0] == 'x' && array[4] == 'x' && array[8] == 'x';
-//                ||array[2] == 'x' && array[4] == 'x' && array[6] == 'x';
+        boolean xWinner = array[0] == 'x' && array[4] == 'x' && array[8] == 'x'
+               ||array[2] == 'x' && array[4] == 'x' && array[6] == 'x';
 
-        boolean oWinner = array[2] == '0' && array[4] == '0' && array[6] == '0';
-//                || array[0] == 'x' && array[4] == 'x' && array[8] == 'x';
+        boolean oWinner = array[2] == '0' && array[4] == '0' && array[6] == '0'
+                || array[0] == 'x' && array[4] == 'x' && array[8] == 'x';
 
 
 
