@@ -1,41 +1,43 @@
+import java.util.EventListener;
 import java.util.Scanner;
 
 public class Matalh {
+    public static final char X_SYMBOL = 'x';
+    public static final char O_SYMBOL = '0';
+    public static final int FIRST_PLAYER = 1;
+    public static final int SECOND_PLAYER = 2;
 
     public static void main(String[] args) {
 
-        game();
+
 
 
     }
 
     public static void game() {
         char[] x0 = { '1' ,'2' , '3', '4', '5', '6', '7','8' ,'9'};
-        char player1symbol = 'x';
-        char player2symbol = '0';
-        int turn = 1;
+        boolean play  = true;
+        int turn = 1, countSteps = 9;
         System.out.println("first player with symbol X start the Game");
         printBoard(x0);
-        boolean play  = true;
-        int countMaxSteps = 9;
 
-
-        while (play && countMaxSteps > 0) {
-            int userPosition = getPositionFromUser(x0);
-            if (isAvailable(x0, userPosition)) {
-                if (turn == 1) {
-                    turn = 2;
-                    play = !placeSymbolInBoard(x0, userPosition, player1symbol);
-                } else {
-                    turn = 1;
-                    play = !placeSymbolInBoard(x0, userPosition, player2symbol);
+            while (play && countSteps > 0) {
+                int userPosition = getPositionFromUser(x0);
+                if (isAvailable(x0, userPosition)) {
+                    if (turn == FIRST_PLAYER) {
+                        turn = SECOND_PLAYER;
+                        play = !placeSymbolInBoard(x0, userPosition, X_SYMBOL);
+                    } else {
+                        turn = FIRST_PLAYER;
+                        play = !placeSymbolInBoard(x0, userPosition, O_SYMBOL);
+                    }
+                    countSteps--;
                 }
-                countMaxSteps--;
             }
-        }
-        if (countMaxSteps == 0) {
-            System.out.println(" NO Winners :)");
-        }
+            if (countSteps == 0) {
+                System.out.println(" NO Winners :)");
+            }
+
 
     }
 
@@ -85,6 +87,10 @@ public class Matalh {
             System.out.println("choose a positions  1-9");
             userPosition = scanner.nextInt();
             invalidPosition = userPosition < 1 || userPosition > 9 ;
+
+            if (!invalidPosition && x0[userPosition-1] == 'x' || x0[userPosition-1] == '0') {
+                System.out.println("The place is occupied");
+            }
            /* validPosition = userPosition >= 1 && userPosition <= 9;
             System.out.println();*/
         } while (invalidPosition );
@@ -98,29 +104,26 @@ public class Matalh {
         winner = checkWinnerByRow(array);
         if (winner == '-') {
             winner = checkWinnerByColumn(array);
-            if (winner == '-') {
-                winner = checkWinnerBySlant(array);
+            if (winner != '5') {
+                if (array[4] == X_SYMBOL) {
+                    winner = checkWinnerBySlant(array, X_SYMBOL);
+                } else {
+                    winner = checkWinnerBySlant(array,O_SYMBOL);
+                }
 
             }
         }
         return winner;
     }
 
-    private static char checkWinnerBySlant(char[] array) {
+    private static char checkWinnerBySlant(char[] array , char symbol) {
         char winner = '-';
-        boolean xWinner = array[0] == 'x' && array[4] == 'x' && array[8] == 'x'
-               ||array[2] == 'x' && array[4] == 'x' && array[6] == 'x';
-
-        boolean oWinner = array[2] == '0' && array[4] == '0' && array[6] == '0'
-                || array[0] == 'x' && array[4] == 'x' && array[8] == 'x';
-
-
-
-        if (xWinner) {
-            winner = 'x';
-        } else if (oWinner) {
-            winner = '0';
+        boolean winnerBysSlant = array[0] == symbol  && array[8] == symbol
+               ||   array[2] == symbol   && array[6] == symbol;
+        if (winnerBysSlant) {
+            winner = symbol;
         }
+
         return winner;
     }
 
@@ -132,16 +135,16 @@ public class Matalh {
         int countPointsPlayer0 = 0;
         for (int i = 0; i < columns; i++) {
             for (int cell = i; cell < (i+1) + 6 ; cell += columns) {
-                if (symbols[cell] == 'x') {
+                if (symbols[cell] == X_SYMBOL) {
                     countPointsPlayerX++;
-                } else if (symbols[cell] == '0') {
+                } else if (symbols[cell] == O_SYMBOL) {
                     countPointsPlayer0++;
                 } else break;
             }
             if (countPointsPlayer0 == columns) {
-                return '0';
+                return X_SYMBOL;
             } else if (countPointsPlayerX == columns) {
-                return 'x';
+                return O_SYMBOL;
             } else {
                 countPointsPlayer0 = 0;
                 countPointsPlayerX = 0;
